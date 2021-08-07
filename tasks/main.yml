@@ -1,0 +1,37 @@
+---
+- name: Remove transmission 
+  package:
+     name: transmission-gtk
+     state: absent
+
+- name: Install some basic packages
+  package:
+     name: "{{ item }}"
+     state: latest
+     update_cache: yes
+  loop:
+    - tmux
+    - sysstat
+    - htop
+    - deluge
+
+- name: Configure firewall
+  ufw:
+    state: enabled
+    policy: deny
+
+- name: Set the PS1 for the user
+  copy:
+    src: bashrc
+    dest: /home/{{ username }}/.bashrc
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0644
+
+- name: Set PS1 for root
+  copy: 
+    src: rootbashrc
+    dest: /root/.bashrc
+    owner: root
+    group: root
+    mode: 0644 
